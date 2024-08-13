@@ -26,7 +26,9 @@ void ConsoleView::update() {
         mvaddch(i, 0, wallTexture);
         mvaddch(i, model->getGameWidth() - 1, wallTexture);
     }
-
+    // for(Shot& shot: model->getShots()){
+    //     mvaddch(shot.getY(), shot.getX(), 'I');
+    // }
     // Show points of player
     mvprintw(1, model->getGameWidth() / 2 / 2, "%i", 0);
 
