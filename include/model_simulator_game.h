@@ -3,6 +3,16 @@
 
 #include "observer.h" // include header file for the Observable class
 
+class Shot{
+    public:
+        Shot(int originX,int originY, int directionY, int updatesPerMovement, int stepCounter);
+        int getX();
+        int getY();
+        void updatePos();
+    private:
+        int x,y, directionY, updatesPerMovement, stepCounter;
+};
+
 class Player {
 public:
     Player(int x, int y); // constructor that takes in initial x and y coordinates of player
@@ -13,7 +23,6 @@ public:
 private:
     int x, y, height; // player's coordinates and height
 };
-
 class GameModel : public Observable { // Game class inherits from Observable class
 public:
     GameModel(); // constructor
@@ -21,13 +30,14 @@ public:
     int getGameWidth(); // returns the game's width
     int getGameHeight(); // returns the game's height
     Player& getPlayer(); // returns reference to player object
-
+    void addShot(Player& p);
     void simulate_game_step(); // simulates one step of the game
     void control_player(wchar_t ch); // updates player movement direction based on keyboard input
-
+    // std::vector<Shot> getShots();
     int addOne(int input_value); // Example function - used for simple unit tests
 
 private:
+    // std::vector<Shot> shots;
     int width = 40; // game width
     int height = 24; // game height
     int dir = 1; // ball direction
