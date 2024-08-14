@@ -33,8 +33,8 @@ public:
     int getLevelSpeed();
     int getOffset();
 private:
-    void addAlien();
-    std::vector<Alien*> aliens;
+    void addAlien(int x, int y);
+    std::vector<Alien> aliens;
     int numberAliens; // number of random distributet aliens at absolute spots 
     int levelSpeed; // represents the difficulty -> influences the speed of progress from the aliens and the fireing speed of them.
     int offset; // the offset representing the progess form spawnpoint in direction of the player
@@ -62,6 +62,8 @@ private:
     int dir = 1; // ball direction
     Player player; // player object
     Level level; // level object
+    int initNumberAliens = 5; // Initial Alien Number
+    int initLevelSpeed = 1; // Intial Game Speed
 };
 
 #endif // end of header file

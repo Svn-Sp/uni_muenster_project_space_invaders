@@ -1,8 +1,9 @@
 #include "model_simulator_game.h"
 #include <ncurses.h>
 #include <stdlib.h>
+#include <iostream>
 
-Player::Player(int y, int x)
+Player::Player(int x, int y)
 {
     setX(x);
     setY(y);
@@ -45,21 +46,20 @@ void Alien::setY(int a){
     y = a;
 }
 
-void Level::addAlien(int x, int y){
-    aliens.push_back(Alien& alien(x,y))
+Level::Level(int numberAliens, int levelSpeed){
+    std::cout << "Moin" << std::endl;
 }
 
-int Level::Level(int numberAliens, int levelSpeed){
-    
+void Level::addAlien(int x, int y){
+    Alien alien{x,y};
+    aliens.push_back(alien);
 }
 
 int Level::getNumberAliens(){
     return numberAliens;
 } 
 
-GameModel::GameModel()
-    : player(height, width/2 ) {
-};
+GameModel::GameModel() : player(width/2, height), level(5, 1) {};
 
 // Example function - used for simple unit tests
 int GameModel::addOne(int input_value) {
