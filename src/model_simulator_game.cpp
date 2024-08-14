@@ -24,6 +24,39 @@ void Player::setY(int a) {
     y = a;
 };
 
+Alien::Alien(int x , int y){
+    setX(x);
+    setY(y);
+}
+
+int Alien::getX(){
+    return x;
+}
+
+int Alien::getY(){
+    return y;
+}
+
+void Alien::setX(int a){
+    x = a;
+}
+
+void Alien::setY(int a){
+    y = a;
+}
+
+void Level::addAlien(int x, int y){
+    aliens.push_back(Alien& alien(x,y))
+}
+
+int Level::Level(int numberAliens, int levelSpeed){
+    
+}
+
+int Level::getNumberAliens(){
+    return numberAliens;
+} 
+
 GameModel::GameModel()
     : player(height, width/2 ) {
 };
@@ -51,9 +84,9 @@ void GameModel::control_player(wchar_t ch)
     {
         player.setX(player.getX() - 1);
     }
-    if (ch==KEY_UP)
+    if (ch==KEY_RIGHT)
     {
-        player.setY(player.getY() - 1);
+        player.setX(player.getX() + 1);
     }
 };
 

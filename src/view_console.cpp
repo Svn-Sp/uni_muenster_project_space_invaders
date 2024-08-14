@@ -16,7 +16,6 @@ ConsoleView::~ConsoleView() {
 void ConsoleView::update() {
     // libncurses standard loop calls
     erase();
-    refresh();
 
     // Example for building the game view
     for(int i = 0; i < model->getGameWidth(); i++) {
@@ -28,10 +27,12 @@ void ConsoleView::update() {
     }
 
     // Show points of player
-    mvprintw(1, model->getGameWidth() / 2 / 2, "%i", 0);
+    mvprintw(1, 2, "Score: %i", 0);
 
     // Draw different objects. 
     drawPlayer(model->getPlayer().getY(), model->getPlayer().getX());
+    
+    refresh();
 };
 
 void ConsoleView::setup_view() {

@@ -1,4 +1,4 @@
-#pragma once  // #pragma once directive added to avoid multiple inclusions of header files
+++++#pragma once  // #pragma once directive added to avoid multiple inclusions of header files
 
 #include "observer.h"  // Include Observer header file
 #include "model_simulator_game.h"  // Include GameModel header file
