@@ -58,7 +58,7 @@ private:
     // Aliens
     std::vector<Alien> aliens;
     std::map<int, std::pair<int, int>> alienSlots;
-    int numberAliens = 1; // Initial Alien Number
+    int numberAliens = 72; // Initial Alien Number
     int levelSpeed = 1; // Intial Game Speed
 };
 

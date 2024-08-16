@@ -135,7 +135,7 @@ void GameModel::nextLevel(){
     std::random_device rd;  // Zufälliger Seed
     std::mt19937 g(rd());   // Mersenne-Twister-Engine
 
-    std::shuffle(numbers.begin(), numbers.end(), g);
+    std::shuffle(numbers.begin(), numbers.end()-1, g);
     // End of Random Number Generator
 
     aliens.reserve(numberAliens);

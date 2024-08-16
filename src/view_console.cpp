@@ -48,6 +48,14 @@ void ConsoleView::updateLevel(){
 void ConsoleView::setup_view() {
     // Init ncurses
     initscr();
+
+    // Initialisiert Farben
+    start_color();                          // Nummer: Schriftfarbe: Hintergrunfarbe: Für:
+    init_pair(1, COLOR_WHITE, COLOR_BLACK); //  1       Weiß            Schwarz         Basisfarbe
+    init_pair(2, COLOR_GREEN, COLOR_BLACK); //  2       Grün            Schwarz         Aliens
+    init_pair(3, COLOR_BLUE, COLOR_BLACK);  //  3       Blau            Schwarz         Spieler
+    init_pair(4, COLOR_RED, COLOR_BLACK);   //  4       Rot             Schwarz         Schüsse
+
     cbreak();
     noecho();
     curs_set(0);
@@ -56,12 +64,16 @@ void ConsoleView::setup_view() {
 };
 
 void ConsoleView::drawPlayer(int y, int x) {
+    attron(COLOR_PAIR(3));
     mvaddch(y-1, x, playerTexture);
+    attron(COLOR_PAIR(1));
 };
 
 void ConsoleView::drawAliens(std::vector<Alien>& aliens){
+    attron(COLOR_PAIR(2));
     for (Alien& alien : aliens)
     {
         mvaddch(alien.getY(), alien.getX(), alienTexture);
     }
+    attron(COLOR_PAIR(1));
 };
