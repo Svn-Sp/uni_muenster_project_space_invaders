@@ -3,8 +3,11 @@
 #include <stdlib.h>
 #include <iostream>
 
+
 #include <cmath>
 #include <utility>
+
+// For Random Number Generator
 #include <algorithm>
 #include <random>
 
@@ -150,5 +153,12 @@ void GameModel::nextLevel(){
         aliens.push_back(alien);
     }
 
-    numberAliens++;  
+    numberAliens++;
 }
+
+void GameModel::moveAliens(){
+    for (Alien& alien : aliens)
+    {
+        alien.setY(alien.getY()+1);
+    }
+};

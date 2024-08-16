@@ -44,6 +44,7 @@ public:
     // Level Control
     void nextLevel(); // Starts the next level depending on arguments
     std::map<int, std::pair<int, int>> defineSlots(); // Defines the space where Aliens are allowed to spawn
+    void moveAliens();
 
     int addOne(int input_value); // Example function - used for simple unit tests
 

@@ -4,6 +4,9 @@
 #include "model_simulator_game.h"  // Include GameModel header file
 #include <ncurses.h>
 
+// Zeit
+#include <ctime>
+
 class ConsoleView : public Observer  // Inheriting from Observer class
 {
     GameModel* model;  // Pointer variable of GameModel class
@@ -26,6 +29,9 @@ private:
     char wallTexture = 'X';  // Wall texture character
     char playerTexture = 'P'; // Player texture character
     char alienTexture = 'M'; // Alien texture character
+
+    // Time
+    std::time_t earlier;
 
     void setup_view();  // Function to set up the view
 };

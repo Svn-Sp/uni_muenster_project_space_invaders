@@ -7,6 +7,7 @@ ConsoleView::ConsoleView(GameModel* model) {
 	setup_view();
 	this->model = model;
 	this->model->addObserver(this);
+    this->earlier = std::time(nullptr);
 };
 
 ConsoleView::~ConsoleView() {
@@ -43,6 +44,15 @@ void ConsoleView::updateLevel(){
     {
         model->nextLevel();
     }
+
+    std::time_t now = std::time(nullptr);
+
+    if (std::difftime(now, earlier) >= 2)
+    {
+        earlier = now;
+        model->moveAliens();
+    }
+    
 }
 
 void ConsoleView::setup_view() {
