@@ -26,14 +26,24 @@ void ConsoleView::update() {
         mvaddch(i, model->getGameWidth() - 1, wallTexture);
     }
 
+    updateLevel();
+
     // Show points of player
     mvprintw(1, 2, "Score: %i", 0);
 
     // Draw different objects. 
     drawPlayer(model->getPlayer().getY(), model->getPlayer().getX());
+    drawAliens(model->getAliens());
     
     refresh();
 };
+
+void ConsoleView::updateLevel(){
+    if (model->getAliens().empty() == true)
+    {
+        model->nextLevel();
+    }
+}
 
 void ConsoleView::setup_view() {
     // Init ncurses
@@ -46,5 +56,12 @@ void ConsoleView::setup_view() {
 };
 
 void ConsoleView::drawPlayer(int y, int x) {
-    mvaddch(y-1, x, 'P');
+    mvaddch(y-1, x, playerTexture);
+};
+
+void ConsoleView::drawAliens(std::vector<Alien>& aliens){
+    for (Alien& alien : aliens)
+    {
+        mvaddch(alien.getY(), alien.getX(), alienTexture);
+    }
 };

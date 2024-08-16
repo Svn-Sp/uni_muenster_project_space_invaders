@@ -3,6 +3,12 @@
 #include <stdlib.h>
 #include <iostream>
 
+#include <cmath>
+#include <utility>
+#include <algorithm>
+#include <random>
+
+// Player
 Player::Player(int x, int y)
 {
     setX(x);
@@ -25,6 +31,8 @@ void Player::setY(int a) {
     y = a;
 };
 
+
+// Alien
 Alien::Alien(int x , int y){
     setX(x);
     setY(y);
@@ -46,20 +54,10 @@ void Alien::setY(int a){
     y = a;
 }
 
-Level::Level(int numberAliens, int levelSpeed){
-    std::cout << "Moin" << std::endl;
-}
 
-void Level::addAlien(int x, int y){
-    Alien alien{x,y};
-    aliens.push_back(alien);
-}
 
-int Level::getNumberAliens(){
-    return numberAliens;
-} 
-
-GameModel::GameModel() : player(width/2, height), level(5, 1) {};
+// GameModel
+GameModel::GameModel() : player(width/2, height) {};
 
 // Example function - used for simple unit tests
 int GameModel::addOne(int input_value) {
@@ -76,6 +74,10 @@ int GameModel::getGameHeight() {
     
 Player& GameModel::getPlayer() {
     return player; 
+};
+
+std::vector<Alien>& GameModel::getAliens(){
+    return aliens;
 };
 
 void GameModel::control_player(wchar_t ch)
@@ -95,3 +97,49 @@ void GameModel::simulate_game_step()
     // Implement game dynamics.
     notifyUpdate();
 };
+
+void GameModel::defineSlots(){
+    // Calculates the needed rows for the number of Aliens to fit
+    double temp = numberAliens / 36;
+    int rows = std::ceil(temp);
+
+    for (int i = 0; i < rows; i++)
+    {
+        for (int j = 0; j < 36; j++)
+        {
+            alienSlots[36 * i + j] = std::make_pair(3+j, 4+i);
+        }
+    }
+    
+
+}
+
+void GameModel::nextLevel(){
+    
+    defineSlots();
+
+    double temp = numberAliens / 36;
+    int rows = std::ceil(temp);
+    
+    std::vector<int> numbers;
+    for (int i = 0; i <= rows*36; i++) {
+        numbers.push_back(i);
+    }
+
+    // Zufälliger Generator
+    std::random_device rd;  // Zufälliger Seed
+    std::mt19937 g(rd());   // Mersenne-Twister-Engine
+
+    std::shuffle(numbers.begin(), numbers.end(), g);
+
+    for (int i = 0; i < numberAliens; i++)
+    {
+        int x = alienSlots[numbers[i]].first;
+        int y = alienSlots[numbers[i]].second;
+        Alien alien(x,y);
+        
+        aliens.push_back(alien);
+    }
+
+    numberAliens++;  
+}

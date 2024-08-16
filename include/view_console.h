@@ -1,4 +1,4 @@
-++++#pragma once  // #pragma once directive added to avoid multiple inclusions of header files
+#pragma once  // #pragma once directive added to avoid multiple inclusions of header files
 
 #include "observer.h"  // Include Observer header file
 #include "model_simulator_game.h"  // Include GameModel header file
@@ -15,11 +15,17 @@ public:
 
     void update();  // Function to update the screen
 
+    void updateLevel(); 
+
     void drawPlayer(int y, int x);  // Function to draw the player
+
+    void drawAliens(std::vector<Alien>& aliens);
 
 private:
     // Textures
     char wallTexture = 'X';  // Wall texture character
+    char playerTexture = 'P'; // Player texture character
+    char alienTexture = 'M'; // Alien texture character
 
     void setup_view();  // Function to set up the view
 };
