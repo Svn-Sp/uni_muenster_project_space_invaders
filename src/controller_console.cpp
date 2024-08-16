@@ -6,7 +6,11 @@ ConsoleController::ConsoleController(GameModel* model) {
 
 wchar_t ConsoleController::getInput() {
     wchar_t ch = getch();
+    if (ch == 'q')
+    {
+        model->stopGame();
+    }
+    
     model->control_player(ch);
-    return ch;
     return ch;
 };

@@ -18,20 +18,27 @@ public:
 
     void update();  // Function to update the screen
 
-    void updateLevel(); 
+    void updateLevel();
+
+    void drawFrame(); // Function to draw the Frame
+
+    void drawScore();
 
     void drawPlayer(int y, int x);  // Function to draw the player
 
-    void drawAliens(std::vector<Alien>& aliens);
+    void drawAliens(std::vector<Alien>& aliens); // Function to draw the aliens
+
+    void drawDeadline(); // Function to draw the deadline
 
 private:
     // Textures
     char wallTexture = 'X';  // Wall texture character
     char playerTexture = 'P'; // Player texture character
     char alienTexture = 'M'; // Alien texture character
+    char deadlineTexture = '-'; // Deadline texture character
 
     // Time
-    std::time_t earlier;
+    std::time_t alienMoveEarlier;
 
     void setup_view();  // Function to set up the view
 };

@@ -33,8 +33,12 @@ class GameModel : public Observable { // Game class inherits from Observable cla
 public:
     GameModel(); // constructor
 
+    bool isRunning(); // returns if the game is running
+    void stopGame(); // stops the game
+
     int getGameWidth(); // returns the game's width
     int getGameHeight(); // returns the game's height
+    int getLevelSpeed();
     Player& getPlayer(); // returns reference to player object
     std::vector<Alien>& getAliens(); // returns reference to aliens vector
 
@@ -59,8 +63,12 @@ private:
     // Aliens
     std::vector<Alien> aliens;
     std::map<int, std::pair<int, int>> alienSlots;
-    int numberAliens = 72; // Initial Alien Number
+    int numberAliens = 20; // Initial Alien Number
     int levelSpeed = 1; // Intial Game Speed
+
+
+    // Important! Tells if the game is running
+    bool running = true;
 };
 
 #endif // end of header file

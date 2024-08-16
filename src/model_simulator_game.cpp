@@ -11,6 +11,16 @@
 #include <algorithm>
 #include <random>
 
+// Game
+bool GameModel::isRunning(){
+    return running;
+};
+
+void GameModel::stopGame(){
+    running = false;
+};
+
+
 // Player
 Player::Player(int x, int y)
 {
@@ -81,6 +91,10 @@ Player& GameModel::getPlayer() {
 
 std::vector<Alien>& GameModel::getAliens(){
     return aliens;
+};
+
+int GameModel::getLevelSpeed(){
+    return levelSpeed;
 };
 
 void GameModel::control_player(wchar_t ch)
