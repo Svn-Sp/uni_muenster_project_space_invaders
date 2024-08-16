@@ -43,7 +43,7 @@ public:
 
     // Level Control
     void nextLevel(); // Starts the next level depending on arguments
-    void defineSlots(); // Defines the space where Aliens are allowed to spawn
+    std::map<int, std::pair<int, int>> defineSlots(); // Defines the space where Aliens are allowed to spawn
 
     int addOne(int input_value); // Example function - used for simple unit tests
 
@@ -58,7 +58,7 @@ private:
     // Aliens
     std::vector<Alien> aliens;
     std::map<int, std::pair<int, int>> alienSlots;
-    int numberAliens = 5; // Initial Alien Number
+    int numberAliens = 1; // Initial Alien Number
     int levelSpeed = 1; // Intial Game Speed
 };
 

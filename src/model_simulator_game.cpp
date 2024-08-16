@@ -98,46 +98,55 @@ void GameModel::simulate_game_step()
     notifyUpdate();
 };
 
-void GameModel::defineSlots(){
+std::map<int, std::pair<int, int>> GameModel::defineSlots(){
     // Calculates the needed rows for the number of Aliens to fit
-    double temp = numberAliens / 36;
+    int spawnWidth = width - 4;
+
+    double temp = static_cast<double>(numberAliens) / spawnWidth;
     int rows = std::ceil(temp);
+
+    std::map<int, std::pair<int, int>> slots;
 
     for (int i = 0; i < rows; i++)
     {
-        for (int j = 0; j < 36; j++)
+        for (int j = 0; j < spawnWidth; j++)
         {
-            alienSlots[36 * i + j] = std::make_pair(3+j, 4+i);
+            slots[(spawnWidth*i)+j] = std::make_pair(2+j, 3+i);
         }
     }
     
-
+    return slots;
 }
 
-void GameModel::nextLevel(){
-    
-    defineSlots();
+void GameModel::nextLevel(){    
+    alienSlots = defineSlots();
+    int spawnWidth = width - 4;
 
-    double temp = numberAliens / 36;
+    double temp = static_cast<double>(numberAliens) / spawnWidth;
     int rows = std::ceil(temp);
     
+    // Random Number Generator
     std::vector<int> numbers;
-    for (int i = 0; i <= rows*36; i++) {
+    numbers.reserve(rows*spawnWidth);
+    for (int i = 0; i <= rows*spawnWidth; i++) {
         numbers.push_back(i);
     }
 
-    // Zufälliger Generator
     std::random_device rd;  // Zufälliger Seed
     std::mt19937 g(rd());   // Mersenne-Twister-Engine
 
     std::shuffle(numbers.begin(), numbers.end(), g);
+    // End of Random Number Generator
 
+    aliens.reserve(numberAliens);
     for (int i = 0; i < numberAliens; i++)
     {
-        int x = alienSlots[numbers[i]].first;
-        int y = alienSlots[numbers[i]].second;
+        std::pair<int, int> coordinates = alienSlots[numbers[i]];
+
+        int x = coordinates.first;
+        int y = coordinates.second;
         Alien alien(x,y);
-        
+
         aliens.push_back(alien);
     }
 
