@@ -7,7 +7,6 @@ ConsoleView::ConsoleView(GameModel* model) {
 	setup_view();
 	this->model = model;
 	this->model->addObserver(this);
-    this->alienMoveEarlier = std::time(nullptr);
 };
 
 ConsoleView::~ConsoleView() {
@@ -18,41 +17,18 @@ void ConsoleView::update() {
     // libncurses standard loop calls
     erase();
 
-    updateLevel();
+    model->updateLevel();
 
     // Draw different objects.
-    drawFrame();
     drawScore();
-    drawPlayer(model->getPlayer().getY(), model->getPlayer().getX());
-    drawAliens(model->getAliens());
     drawDeadline();
+    drawShots(model->getShots());
+    drawAliens(model->getAliens());
+    drawPlayer(model->getPlayer().getY(), model->getPlayer().getX());
+    drawFrame();
 
     refresh();
 };
-
-void ConsoleView::updateLevel(){
-    if (model->getAliens().empty() == true)
-    {
-        model->nextLevel();
-    }
-
-    std::time_t now = std::time(nullptr);
-
-    if (std::difftime(now, alienMoveEarlier) >= (model->getLevelSpeed()))
-    {
-        alienMoveEarlier = now;
-        model->moveAliens();
-    }
-    
-    for (auto& alien : model->getAliens())
-    {
-        if (alien.getY() >= model->getGameHeight()-2)
-        {
-            model->stopGame();
-        }   
-    }
-    
-}
 
 void ConsoleView::setup_view() {
     // Init ncurses
@@ -78,7 +54,7 @@ void ConsoleView::drawFrame(){
     for(int i = 0; i < model->getGameWidth(); i++) {
         mvaddch(0, i, wallTexture);
     }
-    for(int i = 0; i < model->getGameHeight(); i++) {
+    for(int i = 0; i <= model->getGameHeight(); i++) {
         mvaddch(i, 0, wallTexture);
         mvaddch(i, model->getGameWidth() - 1, wallTexture);
     }
@@ -86,12 +62,13 @@ void ConsoleView::drawFrame(){
 
 void ConsoleView::drawScore(){
     // Show points of player
-    mvprintw(1, 2, "Score: %i", 0);
+    auto score = model->getScore();
+    mvprintw(1, 2, "Score: %i", score);
 };
 
 void ConsoleView::drawPlayer(int y, int x) {
     attron(COLOR_PAIR(3));
-    mvaddch(y-1, x, playerTexture);
+    mvaddch(y, x, playerTexture);
     attron(COLOR_PAIR(1));
 };
 
@@ -104,11 +81,20 @@ void ConsoleView::drawAliens(std::vector<Alien>& aliens){
     attron(COLOR_PAIR(1));
 };
 
+void ConsoleView::drawShots(std::vector<Shot>& shots){
+    attron(COLOR_PAIR(4));
+    for (Shot& shot : shots)
+    {
+        mvaddch(shot.getY(), shot.getX(), shotTexture);
+    }
+    attron(COLOR_PAIR(1));
+};
+
 void ConsoleView::drawDeadline(){
     attron(COLOR_PAIR(5));
     for (int i = 1; i < model->getGameWidth()-1; i++)
     {
-        mvaddch(model->getGameHeight()-2, i, deadlineTexture);
+        mvaddch(model->getGameHeight()-1, i, deadlineTexture);
     }  
     attron(COLOR_PAIR(1));
 };
