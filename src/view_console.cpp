@@ -20,11 +20,11 @@ void ConsoleView::update() {
     model->updateLevel();
 
     // Draw different objects.
-    drawScore();
     drawDeadline();
     drawShots(model->getShots());
     drawAliens(model->getAliens());
     drawPlayer(model->getPlayer().getY(), model->getPlayer().getX());
+    drawScore();
     drawFrame();
 
     refresh();

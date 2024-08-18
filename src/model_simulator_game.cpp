@@ -117,12 +117,19 @@ void GameModel::simulate_game_step()
 void GameModel::control_player(wchar_t ch)
 {
     if (ch==KEY_LEFT)
-    {
-        player.setX(player.getX() - 1);
+    {   
+        if (player.getX() > 1)
+        {   
+            player.setX(player.getX() - 1);
+        }
     }
     if (ch==KEY_RIGHT)
     {
-        player.setX(player.getX() + 1);
+        if (player.getX()<width-2)
+        {
+            player.setX(player.getX() + 1);
+        }
+         
     }
     if (ch==KEY_UP)
     {
@@ -161,16 +168,17 @@ std::vector<Alien>& GameModel::getAliens(){
     return aliens;
 };
 
-void GameModel::deleteAlien(int x, int y){
+bool GameModel::deleteAlien(int x, int y){
     for (long unsigned int i = 0; i < aliens.size(); i++)
     {
         if (aliens[i].getX() == x && aliens[i].getY() == y)
         {
             aliens.erase(aliens.begin()+i);
             increaseScore();
-            break;
+            return true;
         }   
-    } 
+    }
+    return false;
 };
 
 void GameModel::moveAliens(){
@@ -214,6 +222,16 @@ void GameModel::moveShots(){
     }
 };
 
+void GameModel::checkColision(){
+    for (auto& shot : shots)
+    {
+        if (deleteAlien(shot.getX(), shot.getY()))
+        {
+            deleteShot(shot.getX(), shot.getY());
+        }   
+    } 
+};
+
 
 
 
@@ -240,8 +258,6 @@ void GameModel::updateLevel(){
         nextLevel();
     }
 
-    
-
     auto shotMoveNow = std::chrono::system_clock::now();
     std::chrono::duration<double> difference = shotMoveNow - shotMoveEarlier;
     if (difference.count() >= 0.05)
@@ -249,6 +265,8 @@ void GameModel::updateLevel(){
         shotMoveEarlier = shotMoveNow;
         moveShots();
     }
+
+    checkColision();
 
     auto alienMoveNow = std::chrono::system_clock::now();
 
@@ -260,10 +278,9 @@ void GameModel::updateLevel(){
         moveAliens();
     }
 
-    
+    checkColision();
     
     for (auto& alien : getAliens())
-    
     {
         if (alien.getY() >= getGameHeight()-1)
         {

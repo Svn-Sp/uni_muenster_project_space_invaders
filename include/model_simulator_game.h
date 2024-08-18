@@ -68,7 +68,7 @@ public:
 
     // Alien
     std::vector<Alien>& getAliens(); // returns reference to aliens vector
-    void deleteAlien(int x, int y);
+    bool deleteAlien(int x, int y);
     void moveAliens();
 
     // Shot
@@ -77,6 +77,7 @@ public:
     void alienShoot();
     void deleteShot(int x, int y);
     void moveShots();
+    void checkColision();
 
     // Score
     int getScore();
@@ -106,7 +107,7 @@ private:
 
     // Shots
     std::vector<Shot> shots;
-    int reloadTime;
+    int reloadTime = 0.2;
 
     //Score
     int score = 0;
