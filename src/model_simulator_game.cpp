@@ -190,7 +190,7 @@ void GameModel::moveAliens(){
     for (Alien& alien : aliens)
     {
         alien.setY(alien.getY()+1);
-        int num = rand() % 30 + 1;
+        int num = rand() % 15 + 1;
         if(num==1){
             shots.emplace_back(alien.getX(), alien.getY()+1, 1);
         }
