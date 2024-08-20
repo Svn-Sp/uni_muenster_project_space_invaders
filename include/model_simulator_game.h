@@ -102,8 +102,8 @@ private:
     // Aliens
     std::vector<Alien> aliens;
     std::map<int, std::pair<int, int>> alienSlots;
-    int numberAliens = 20; // Initial Alien Number
-    int levelSpeed = 1; // Intial Game Speed
+    int numberAliens = 6; // Initial Alien Number
+    float levelSpeed = 1; // Intial Game Speed
 
     // Shots
     std::vector<Shot> shots;

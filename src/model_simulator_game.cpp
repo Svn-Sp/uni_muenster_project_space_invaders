@@ -3,7 +3,8 @@
 #include <stdlib.h>
 #include <iostream>
 
-
+#include <ctime>
+#include <cstdlib>
 #include <cmath>
 #include <utility>
 #include <vector>
@@ -178,13 +179,21 @@ bool GameModel::deleteAlien(int x, int y){
             return true;
         }   
     }
+    if(player.getX()==x && player.getY()==y){
+       stopGame(); 
+    }
     return false;
 };
 
 void GameModel::moveAliens(){
+    srand(time(0));
     for (Alien& alien : aliens)
     {
         alien.setY(alien.getY()+1);
+        int num = rand() % 30 + 1;
+        if(num==1){
+            shots.emplace_back(alien.getX(), alien.getY()+1, 1);
+        }
     }
 };
 
@@ -260,7 +269,7 @@ void GameModel::updateLevel(){
 
     auto shotMoveNow = std::chrono::system_clock::now();
     std::chrono::duration<double> difference = shotMoveNow - shotMoveEarlier;
-    if (difference.count() >= 0.05)
+    if (difference.count() >= 0.01)
     {
         shotMoveEarlier = shotMoveNow;
         moveShots();
@@ -290,24 +299,24 @@ void GameModel::updateLevel(){
 }
 
 void GameModel::nextLevel(){    
+    if(levelSpeed>0.3){
+        levelSpeed=levelSpeed-0.2;
+    }
     alienSlots = defineSlots();
     int spawnWidth = width - 4;
-
     double temp = static_cast<double>(numberAliens) / spawnWidth;
     int rows = std::ceil(temp);
     
-    // Random Number Generator
     std::vector<int> numbers;
     numbers.reserve(rows*spawnWidth);
     for (int i = 0; i <= rows*spawnWidth; i++) {
         numbers.push_back(i);
     }
 
-    std::random_device rd;  // Zufälliger Seed
-    std::mt19937 g(rd());   // Mersenne-Twister-Engine
+    std::random_device rd;
+    std::mt19937 g(rd());
 
     std::shuffle(numbers.begin(), numbers.end()-1, g);
-    // End of Random Number Generator
 
     aliens.reserve(numberAliens);
     for (int i = 0; i < numberAliens; i++)
