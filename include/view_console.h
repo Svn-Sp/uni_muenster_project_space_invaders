@@ -15,11 +15,26 @@ public:
 
     void update();  // Function to update the screen
 
+    void drawFrame(); // Function to draw the Frame
+
+    void drawScore();
+
     void drawPlayer(int y, int x);  // Function to draw the player
+
+    void drawAliens(std::vector<Alien>& aliens); // Function to draw the aliens
+
+    void drawShots(std::vector<Shot>& shots); // Function to draw the shots
+
+    void drawDeadline(); // Function to draw the deadline
 
 private:
     // Textures
     char wallTexture = 'X';  // Wall texture character
+    char playerTexture = 'P'; // Player texture character
+    char alienTexture = 'M'; // Alien texture character
+    char deadlineTexture = '-'; // Deadline texture character
+    char shotTexture = '!'; // Shot texture character
+
 
     void setup_view();  // Function to set up the view
 };
