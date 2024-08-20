@@ -35,6 +35,16 @@ void Player::setX(int a) {
 void Player::setY(int a) {
     y = a;
 };
+void Player::looseLife(){
+    lifes-=1;
+}
+void Player::gainLife(){
+    lifes+=1;
+}
+int Player::getLifes(){
+    return lifes;
+}
+
 
 
 
@@ -44,12 +54,18 @@ void Player::setY(int a) {
 Alien::Alien(int x , int y){
     setX(x);
     setY(y);
+    dirX=1;
 }
 
 int Alien::getX(){
     return x;
 }
-
+int Alien::getDirX(){
+    return dirX;
+}
+void Alien::setDirX(int d){
+    dirX=d;
+}
 int Alien::getY(){
     return y;
 }
@@ -169,7 +185,7 @@ std::vector<Alien>& GameModel::getAliens(){
     return aliens;
 };
 
-bool GameModel::deleteAlien(int x, int y){
+bool GameModel::doesHitEntity(int x, int y){
     for (long unsigned int i = 0; i < aliens.size(); i++)
     {
         if (aliens[i].getX() == x && aliens[i].getY() == y)
@@ -180,17 +196,24 @@ bool GameModel::deleteAlien(int x, int y){
         }   
     }
     if(player.getX()==x && player.getY()==y){
-       stopGame(); 
+        player.looseLife();
+        if(player.getLifes()==0){
+            stopGame();
+        }
+        return true;
     }
     return false;
 };
 
 void GameModel::moveAliens(){
     srand(time(0));
-    for (Alien& alien : aliens)
-    {
-        alien.setY(alien.getY()+1);
-        int num = rand() % 30 + 1;
+    for (Alien& alien : aliens){
+        alien.setX(alien.getX()+alien.getDirX());
+        if(alien.getX()<=1||alien.getX()>=getGameWidth()-2){
+            alien.setY(alien.getY()+1);
+            alien.setDirX(-alien.getDirX());
+        }
+        int num = rand() % 10 + 1;
         if(num==1){
             shots.emplace_back(alien.getX(), alien.getY()+1, 1);
         }
@@ -234,7 +257,7 @@ void GameModel::moveShots(){
 void GameModel::checkColision(){
     for (auto& shot : shots)
     {
-        if (deleteAlien(shot.getX(), shot.getY()))
+        if (doesHitEntity(shot.getX(), shot.getY()))
         {
             deleteShot(shot.getX(), shot.getY());
         }   
