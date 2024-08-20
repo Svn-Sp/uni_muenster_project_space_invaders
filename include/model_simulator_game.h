@@ -15,10 +15,14 @@ public:
     Player(int x, int y); // constructor that takes in initial x and y coordinates of player
     int getX();
     int getY();
+    int getLifes();
+    void looseLife();
+    void gainLife();
     void setX(int a);
     void setY(int a);
 private:
     int x, y, height; // player's coordinates and height
+    int lifes=4;
 };
 
 class Alien {
@@ -26,10 +30,12 @@ public:
     Alien(int x, int y);
     int getX();
     int getY();
+    int getDirX();
+    void setDirX(int d);
     void setX(int a);
     void setY(int a);
 private:
-    int x,y;
+    int x,y,dirX;
 };
 
 class Shot
@@ -68,7 +74,7 @@ public:
 
     // Alien
     std::vector<Alien>& getAliens(); // returns reference to aliens vector
-    bool deleteAlien(int x, int y);
+    bool doesHitEntity(int x, int y);
     void moveAliens();
 
     // Shot
@@ -103,7 +109,7 @@ private:
     std::vector<Alien> aliens;
     std::map<int, std::pair<int, int>> alienSlots;
     int numberAliens = 6; // Initial Alien Number
-    float levelSpeed = 1; // Intial Game Speed
+    float levelSpeed = 0.9; // Intial Game Speed
 
     // Shots
     std::vector<Shot> shots;

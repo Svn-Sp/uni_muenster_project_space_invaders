@@ -51,6 +51,12 @@ void ConsoleView::setup_view() {
 
 void ConsoleView::drawFrame(){
     // Example for building the game view
+    if(model->getPlayer().getLifes()==2){
+        attron(COLOR_PAIR(5));
+    }
+    else if(model->getPlayer().getLifes()==1){
+        attron(COLOR_PAIR(4));
+    }
     for(int i = 0; i < model->getGameWidth(); i++) {
         mvaddch(0, i, wallTexture);
     }
@@ -58,12 +64,14 @@ void ConsoleView::drawFrame(){
         mvaddch(i, 0, wallTexture);
         mvaddch(i, model->getGameWidth() - 1, wallTexture);
     }
+    attron(COLOR_PAIR(1));
 };
 
 void ConsoleView::drawScore(){
     // Show points of player
     auto score = model->getScore();
     mvprintw(1, 2, "Score: %i", score);
+    mvprintw(2,2, "Lifes: %i", model->getPlayer().getLifes());
 };
 
 void ConsoleView::drawPlayer(int y, int x) {
@@ -80,6 +88,7 @@ void ConsoleView::drawAliens(std::vector<Alien>& aliens){
     }
     attron(COLOR_PAIR(1));
 };
+
 
 void ConsoleView::drawShots(std::vector<Shot>& shots){
     attron(COLOR_PAIR(4));
