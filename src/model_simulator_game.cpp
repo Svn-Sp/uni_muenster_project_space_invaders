@@ -122,6 +122,7 @@ void Shot::setDir(int a){
 GameModel::GameModel() : player(width/2, height) {
     this->alienMoveEarlier = std::chrono::system_clock::now();
     this->shotMoveEarlier = std::chrono::system_clock::now();
+    this->reloadTimeEarlier = std::chrono::system_clock::now();
 };
 
 // Game Logic
@@ -185,7 +186,7 @@ std::vector<Alien>& GameModel::getAliens(){
     return aliens;
 };
 
-bool GameModel::doesHitEntity(int x, int y){
+bool GameModel::doesHitAlien(int x, int y){
     for (long unsigned int i = 0; i < aliens.size(); i++)
     {
         if (aliens[i].getX() == x && aliens[i].getY() == y)
@@ -195,6 +196,10 @@ bool GameModel::doesHitEntity(int x, int y){
             return true;
         }   
     }
+    return false;
+};
+
+bool GameModel::doesHitPlayer(int x, int y){
     if(player.getX()==x && player.getY()==y){
         player.looseLife();
         if(player.getLifes()==0){
@@ -227,9 +232,15 @@ std::vector<Shot>& GameModel::getShots(){
 };
 
 void GameModel::playerShoot(){
-    int x = player.getX();
-    int y = player.getY()-1;
-    shots.emplace_back(x, y);
+    auto now = std::chrono::system_clock::now();
+    std::chrono::duration<double> difference = now - reloadTimeEarlier;
+    if (difference.count() >= reloadTime)
+    {
+        int x = player.getX();
+        int y = player.getY()-1;
+        shots.emplace_back(x, y);
+        reloadTimeEarlier = now;
+    }
 };
 
 void GameModel::deleteShot(int x, int y){
@@ -257,10 +268,23 @@ void GameModel::moveShots(){
 void GameModel::checkColision(){
     for (auto& shot : shots)
     {
-        if (doesHitEntity(shot.getX(), shot.getY()))
+        if (shot.getDir() == -1)
         {
-            deleteShot(shot.getX(), shot.getY());
-        }   
+            if (doesHitAlien(shot.getX(), shot.getY()))
+            {
+                deleteShot(shot.getX(), shot.getY());
+            }
+            continue;  
+        }
+        
+        else if (shot.getDir() == 1)
+        {
+            if (doesHitPlayer(shot.getX(), shot.getY()))
+            {
+                deleteShot(shot.getX(), shot.getY());
+            }
+            continue;  
+        } 
     } 
 };
 
@@ -290,23 +314,21 @@ void GameModel::updateLevel(){
         nextLevel();
     }
 
-    auto shotMoveNow = std::chrono::system_clock::now();
-    std::chrono::duration<double> difference = shotMoveNow - shotMoveEarlier;
+    auto now = std::chrono::system_clock::now();
+    std::chrono::duration<double> difference = now - shotMoveEarlier;
     if (difference.count() >= 0.01)
     {
-        shotMoveEarlier = shotMoveNow;
+        shotMoveEarlier = now;
         moveShots();
     }
 
     checkColision();
 
-    auto alienMoveNow = std::chrono::system_clock::now();
-
-    difference = alienMoveNow - alienMoveEarlier;
+    difference = now - alienMoveEarlier;
 
     if (difference.count() >= levelSpeed)
     {
-        alienMoveEarlier = alienMoveNow;
+        alienMoveEarlier = now;
         moveAliens();
     }
 

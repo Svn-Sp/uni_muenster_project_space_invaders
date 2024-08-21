@@ -74,13 +74,13 @@ public:
 
     // Alien
     std::vector<Alien>& getAliens(); // returns reference to aliens vector
-    bool doesHitEntity(int x, int y);
+    bool doesHitAlien(int x, int y);
+    bool doesHitPlayer(int x, int y);
     void moveAliens();
 
     // Shot
     std::vector<Shot>& getShots();
     void playerShoot();
-    void alienShoot();
     void deleteShot(int x, int y);
     void moveShots();
     void checkColision();
@@ -113,7 +113,7 @@ private:
 
     // Shots
     std::vector<Shot> shots;
-    int reloadTime = 0.2;
+    double reloadTime = 0.2;
 
     //Score
     int score = 0;
@@ -121,6 +121,7 @@ private:
     // Time
     std::chrono::time_point<std::chrono::system_clock> alienMoveEarlier;
     std::chrono::time_point<std::chrono::system_clock> shotMoveEarlier;
+    std::chrono::time_point<std::chrono::system_clock> reloadTimeEarlier;
 
     // Important! Tells if the game is running
     bool running = true;
