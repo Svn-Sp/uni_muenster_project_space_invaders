@@ -7,7 +7,6 @@
 #include "observer.h" // include header file for the Observable class
 
 // Zeit
-#include <ctime>
 #include <chrono>
 
 class Player {
@@ -52,6 +51,17 @@ private:
     int x,y,dir;
 };
 
+class OneUp
+{
+public:
+    OneUp(int x, int y);
+    int getX();
+    int getY();
+    void setX(int a);
+    void setY(int a);
+private:
+    int x,y;
+};
 
 
 class GameModel : public Observable { // Game class inherits from Observable class
@@ -89,6 +99,12 @@ public:
     int getScore();
     void increaseScore();
 
+    // PowerUp
+    std::vector<OneUp>& getOneUps();
+    void moveOneUps();
+    void spawnOneUp();
+    void deleteOneUp(int x, int y);
+
     // Level Control
     int getLevelSpeed();
     void updateLevel();
@@ -108,7 +124,7 @@ private:
     // Aliens
     std::vector<Alien> aliens;
     std::map<int, std::pair<int, int>> alienSlots;
-    int numberAliens = 6; // Initial Alien Number
+    int numberAliens = 20; // Initial Alien Number
     float levelSpeed = 0.9; // Intial Game Speed
 
     // Shots
@@ -118,10 +134,17 @@ private:
     //Score
     int score = 0;
 
+    //PowerUp
+    std::vector<OneUp> oneUps;
+    double oneUpSpawnFrequency = 12.0;
+
     // Time
     std::chrono::time_point<std::chrono::system_clock> alienMoveEarlier;
     std::chrono::time_point<std::chrono::system_clock> shotMoveEarlier;
     std::chrono::time_point<std::chrono::system_clock> reloadTimeEarlier;
+    std::chrono::time_point<std::chrono::system_clock> oneUpMoveEarlier;
+
+    std::chrono::time_point<std::chrono::system_clock> oneUpTimer;
 
     // Important! Tells if the game is running
     bool running = true;

@@ -22,6 +22,7 @@ void ConsoleView::update() {
     // Draw different objects.
     drawDeadline();
     drawShots(model->getShots());
+    drawOneUps(model->getOneUps());
     drawAliens(model->getAliens());
     drawPlayer(model->getPlayer().getY(), model->getPlayer().getX());
     drawScore();
@@ -89,12 +90,20 @@ void ConsoleView::drawAliens(std::vector<Alien>& aliens){
     attron(COLOR_PAIR(1));
 };
 
-
 void ConsoleView::drawShots(std::vector<Shot>& shots){
     attron(COLOR_PAIR(4));
     for (Shot& shot : shots)
     {
         mvaddch(shot.getY(), shot.getX(), shotTexture);
+    }
+    attron(COLOR_PAIR(1));
+};
+
+void ConsoleView::drawOneUps(std::vector<OneUp>& oneUps){
+    attron(COLOR_PAIR(4));
+    for (OneUp& oneUp : oneUps)
+    {
+        mvaddch(oneUp.getY(), oneUp.getX(), oneUpTexture);
     }
     attron(COLOR_PAIR(1));
 };
