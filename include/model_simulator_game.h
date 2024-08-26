@@ -71,7 +71,8 @@ public:
 
     // Game Logic
     void simulate_game_step(); // simulates one step of the game
-    void control_player(wchar_t ch); // updates player movement direction based on keyboard input
+    void movePlayerLeft(); // moves player left
+    void movePlayerRight(); // moves player right
     bool isRunning(); // returns if the game is running
     void stopGame(); // stops the game
 

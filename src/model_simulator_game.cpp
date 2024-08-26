@@ -158,29 +158,22 @@ void GameModel::simulate_game_step()
     notifyUpdate();
 };
 
-void GameModel::control_player(wchar_t ch)
+void GameModel::movePlayerLeft()
 {
-    if (ch==KEY_LEFT)
+    if (player.getX() > 1)
     {   
-        if (player.getX() > 1)
-        {   
-            player.setX(player.getX() - 1);
-        }
+        player.setX(player.getX() - 1);
     }
-    if (ch==KEY_RIGHT)
-    {
-        if (player.getX()<width-2)
-        {
-            player.setX(player.getX() + 1);
-        }
-         
-    }
-    if (ch==KEY_UP)
-    {
-        playerShoot();
-    }
-    
 };
+void GameModel::movePlayerRight()
+{
+    if (player.getX()<width-2)
+    {   
+        player.setX(player.getX() + 1);
+    }
+};
+
+
 
 bool GameModel::isRunning(){
     return running;
