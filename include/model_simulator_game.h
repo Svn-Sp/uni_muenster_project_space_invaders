@@ -7,7 +7,6 @@
 #include "observer.h" // include header file for the Observable class
 
 // Zeit
-#include <ctime>
 #include <chrono>
 
 class Player {
@@ -52,6 +51,17 @@ private:
     int x,y,dir;
 };
 
+class OneUp
+{
+public:
+    OneUp(int x, int y);
+    int getX();
+    int getY();
+    void setX(int a);
+    void setY(int a);
+private:
+    int x,y;
+};
 
 
 class GameModel : public Observable { // Game class inherits from Observable class
@@ -74,13 +84,13 @@ public:
 
     // Alien
     std::vector<Alien>& getAliens(); // returns reference to aliens vector
-    bool doesHitEntity(int x, int y);
+    bool doesHitAlien(int x, int y);
+    bool doesHitPlayer(int x, int y);
     void moveAliens();
 
     // Shot
     std::vector<Shot>& getShots();
     void playerShoot();
-    void alienShoot();
     void deleteShot(int x, int y);
     void moveShots();
     void checkColision();
@@ -88,6 +98,12 @@ public:
     // Score
     int getScore();
     void increaseScore();
+
+    // PowerUp
+    std::vector<OneUp>& getOneUps();
+    void moveOneUps();
+    void spawnOneUp();
+    void deleteOneUp(int x, int y);
 
     // Level Control
     int getLevelSpeed();
@@ -108,19 +124,27 @@ private:
     // Aliens
     std::vector<Alien> aliens;
     std::map<int, std::pair<int, int>> alienSlots;
-    int numberAliens = 6; // Initial Alien Number
+    int numberAliens = 20; // Initial Alien Number
     float levelSpeed = 0.9; // Intial Game Speed
 
     // Shots
     std::vector<Shot> shots;
-    int reloadTime = 0.2;
+    double reloadTime = 0.2;
 
     //Score
     int score = 0;
 
+    //PowerUp
+    std::vector<OneUp> oneUps;
+    double oneUpSpawnFrequency = 12.0;
+
     // Time
     std::chrono::time_point<std::chrono::system_clock> alienMoveEarlier;
     std::chrono::time_point<std::chrono::system_clock> shotMoveEarlier;
+    std::chrono::time_point<std::chrono::system_clock> reloadTimeEarlier;
+    std::chrono::time_point<std::chrono::system_clock> oneUpMoveEarlier;
+
+    std::chrono::time_point<std::chrono::system_clock> oneUpTimer;
 
     // Important! Tells if the game is running
     bool running = true;

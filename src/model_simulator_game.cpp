@@ -115,6 +115,29 @@ void Shot::setDir(int a){
 
 
 
+//OneUp
+OneUp::OneUp(int x, int y){
+    setX(x);
+    setY(y);
+};
+
+int OneUp::getX(){
+    return x;
+};
+
+int OneUp::getY(){
+    return y;
+};
+
+void OneUp::setX(int a){
+    x = a;
+};
+
+void OneUp::setY(int a){
+    y = a;
+};
+
+
 
 
 // GameModel
@@ -122,6 +145,10 @@ void Shot::setDir(int a){
 GameModel::GameModel() : player(width/2, height) {
     this->alienMoveEarlier = std::chrono::system_clock::now();
     this->shotMoveEarlier = std::chrono::system_clock::now();
+    this->reloadTimeEarlier = std::chrono::system_clock::now();
+    this->oneUpMoveEarlier = std::chrono::system_clock::now();
+
+    this->oneUpTimer = std::chrono::system_clock::now();
 };
 
 // Game Logic
@@ -185,7 +212,7 @@ std::vector<Alien>& GameModel::getAliens(){
     return aliens;
 };
 
-bool GameModel::doesHitEntity(int x, int y){
+bool GameModel::doesHitAlien(int x, int y){
     for (long unsigned int i = 0; i < aliens.size(); i++)
     {
         if (aliens[i].getX() == x && aliens[i].getY() == y)
@@ -195,6 +222,10 @@ bool GameModel::doesHitEntity(int x, int y){
             return true;
         }   
     }
+    return false;
+};
+
+bool GameModel::doesHitPlayer(int x, int y){
     if(player.getX()==x && player.getY()==y){
         player.looseLife();
         if(player.getLifes()==0){
@@ -227,9 +258,15 @@ std::vector<Shot>& GameModel::getShots(){
 };
 
 void GameModel::playerShoot(){
-    int x = player.getX();
-    int y = player.getY()-1;
-    shots.emplace_back(x, y);
+    auto now = std::chrono::system_clock::now();
+    std::chrono::duration<double> difference = now - reloadTimeEarlier;
+    if (difference.count() >= reloadTime)
+    {
+        int x = player.getX();
+        int y = player.getY()-1;
+        shots.emplace_back(x, y);
+        reloadTimeEarlier = now;
+    }
 };
 
 void GameModel::deleteShot(int x, int y){
@@ -247,7 +284,7 @@ void GameModel::moveShots(){
     for (Shot& shot : shots)
     {
         shot.setY(shot.getY()+shot.getDir());
-        if (shot.getY() == 0 || shot.getY() == getGameHeight()+2)
+        if (shot.getY() == 0 || shot.getY() == getGameHeight()+1)
         {
             deleteShot(shot.getX(), shot.getY());
         }
@@ -257,11 +294,35 @@ void GameModel::moveShots(){
 void GameModel::checkColision(){
     for (auto& shot : shots)
     {
-        if (doesHitEntity(shot.getX(), shot.getY()))
+        if (shot.getDir() == -1)
         {
-            deleteShot(shot.getX(), shot.getY());
-        }   
+            if (doesHitAlien(shot.getX(), shot.getY()))
+            {
+                deleteShot(shot.getX(), shot.getY());
+            }
+            continue;  
+        }
+        
+        else if (shot.getDir() == 1)
+        {
+            if (doesHitPlayer(shot.getX(), shot.getY()))
+            {
+                deleteShot(shot.getX(), shot.getY());
+            }
+            continue;  
+        } 
     } 
+
+    for (auto& oneUp : oneUps)
+    {
+        if (oneUp.getX() == player.getX() && oneUp.getY() == player.getY())
+        {
+            deleteOneUp(oneUp.getX(), oneUp.getY());
+            player.gainLife();
+        }
+        
+    }
+    
 };
 
 
@@ -278,6 +339,47 @@ void GameModel::increaseScore(){
 
 
 
+//PowerUp
+std::vector<OneUp>& GameModel::getOneUps(){
+    return oneUps;
+};
+
+void GameModel::moveOneUps(){
+    for (OneUp& oneUp : oneUps)
+    {
+        oneUp.setY(oneUp.getY()+1);
+        if (oneUp.getY() == getGameHeight()+1)
+        {
+            deleteOneUp(oneUp.getX(), oneUp.getY());
+        }
+    }
+};
+
+
+void GameModel::spawnOneUp(){
+    auto now = std::chrono::system_clock::now();
+    std::chrono::duration<double> difference = now - oneUpTimer;
+    if (difference.count() >= oneUpSpawnFrequency)
+    {
+        oneUpTimer = now;
+        srand(time(0));
+        int x = (rand() % (width-3)) + 2;
+        int y = 1;
+        oneUps.emplace_back(x, y);
+    }
+};
+
+void GameModel::deleteOneUp(int x, int y){
+    for (long unsigned int i = 0; i < oneUps.size(); i++)
+    {
+        if (oneUps[i].getX() == x && oneUps[i].getY() == y)
+        {
+            oneUps.erase(oneUps.begin()+i);
+            break;
+        }   
+    }
+};
+
 
 // Level Control
 int GameModel::getLevelSpeed(){
@@ -290,25 +392,33 @@ void GameModel::updateLevel(){
         nextLevel();
     }
 
-    auto shotMoveNow = std::chrono::system_clock::now();
-    std::chrono::duration<double> difference = shotMoveNow - shotMoveEarlier;
+    spawnOneUp();
+
+    auto now = std::chrono::system_clock::now();
+    std::chrono::duration<double> difference = now - shotMoveEarlier;
     if (difference.count() >= 0.01)
     {
-        shotMoveEarlier = shotMoveNow;
+        shotMoveEarlier = now;
         moveShots();
     }
 
     checkColision();
 
-    auto alienMoveNow = std::chrono::system_clock::now();
-
-    difference = alienMoveNow - alienMoveEarlier;
+    difference = now - alienMoveEarlier;
 
     if (difference.count() >= levelSpeed)
     {
-        alienMoveEarlier = alienMoveNow;
+        alienMoveEarlier = now;
         moveAliens();
     }
+
+    difference = now - oneUpMoveEarlier;
+    if (difference.count() >= 1.0)
+    {
+        oneUpMoveEarlier = now;
+        moveOneUps();
+    }
+    
 
     checkColision();
     
