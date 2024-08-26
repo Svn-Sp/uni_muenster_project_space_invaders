@@ -209,6 +209,7 @@ std::vector<Alien>& GameModel::getAliens(){
 };
 
 bool GameModel::doesHitAlien(int x, int y){
+    // Check if the shot hits an alien and delete the alien if it does
     for (long unsigned int i = 0; i < aliens.size(); i++)
     {
         if (aliens[i].getX() == x && aliens[i].getY() == y)
@@ -222,6 +223,7 @@ bool GameModel::doesHitAlien(int x, int y){
 };
 
 bool GameModel::doesHitPlayer(int x, int y){
+    // Check if the shot hits the player and reduce lifes of player if it does
     if(player.getX()==x && player.getY()==y){
         player.looseLife();
         if(player.getLifes()==0){
@@ -233,6 +235,7 @@ bool GameModel::doesHitPlayer(int x, int y){
 };
 
 void GameModel::moveAliens(){
+    // Move the aliens and trigger shots on a random basis
     srand(time(0));
     for (Alien& alien : aliens){
         alien.setX(alien.getX()+alien.getDirX());
@@ -254,6 +257,7 @@ std::vector<Shot>& GameModel::getShots(){
 };
 
 void GameModel::playerShoot(){
+    // Add a shot to the shots vector
     auto now = std::chrono::system_clock::now();
     std::chrono::duration<double> difference = now - reloadTimeEarlier;
     if (difference.count() >= reloadTime)
@@ -266,6 +270,7 @@ void GameModel::playerShoot(){
 };
 
 void GameModel::deleteShot(int x, int y){
+    // Delete shot from shots vector if it hitted a target
     for (long unsigned int i = 0; i < shots.size(); i++)
     {
         if (shots[i].getX() == x && shots[i].getY() == y)
@@ -277,6 +282,7 @@ void GameModel::deleteShot(int x, int y){
 };
 
 void GameModel::moveShots(){
+    // Move all shots one step in their direction
     for (Shot& shot : shots)
     {
         shot.setY(shot.getY()+shot.getDir());
@@ -288,6 +294,8 @@ void GameModel::moveShots(){
 };
 
 void GameModel::checkColision(){
+    // For all shots, check if they hit an alien or the player
+    // Also check if the player hits a oneUp
     for (auto& shot : shots)
     {
         if (shot.getDir() == -1)
@@ -341,6 +349,7 @@ std::vector<OneUp>& GameModel::getOneUps(){
 };
 
 void GameModel::moveOneUps(){
+    // Move all oneUps one step down
     for (OneUp& oneUp : oneUps)
     {
         oneUp.setY(oneUp.getY()+1);
@@ -353,6 +362,7 @@ void GameModel::moveOneUps(){
 
 
 void GameModel::spawnOneUp(){
+    // Spawn a oneUp on a random basis
     auto now = std::chrono::system_clock::now();
     std::chrono::duration<double> difference = now - oneUpTimer;
     if (difference.count() >= oneUpSpawnFrequency)
@@ -383,6 +393,8 @@ int GameModel::getLevelSpeed(){
 };
 
 void GameModel::updateLevel(){
+    // Check if all aliens are destroyed and start the next level
+    // Also check if it's time to let all entities move
     if (getAliens().empty() == true)
     {
         nextLevel();
@@ -427,7 +439,8 @@ void GameModel::updateLevel(){
     } 
 }
 
-void GameModel::nextLevel(){    
+void GameModel::nextLevel(){  
+    // Start the next level by increasing the speed and the number of aliens  
     if(levelSpeed>0.3){
         levelSpeed=levelSpeed-0.2;
     }
