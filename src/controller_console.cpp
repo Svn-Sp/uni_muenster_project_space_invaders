@@ -10,7 +10,7 @@ wchar_t ConsoleController::getInput() {
     //For the usb joystick we would here request the current position of the stick
     if (ch == 'q')
     {
-        model->stopGame();
+        model->exitGame();
     }else if(ch==KEY_LEFT){
         model->movePlayerLeft();
     }else if(ch==KEY_RIGHT){

@@ -66,22 +66,34 @@ void ConsoleView::drawFrame(){
         mvaddch(i, model->getGameWidth() - 1, wallTexture);
     }
     attron(COLOR_PAIR(1));
+    if(model->gameOver){
+        mvprintw(model->getGameHeight()/2, model->getGameWidth()/2-5, "Game Over");
+    }
 };
 
 void ConsoleView::drawScore(){
     // Show points of player
     auto score = model->getScore();
     mvprintw(1, 2, "Score: %i", score);
+    if(model->gameOver){
+        return;
+    }
     mvprintw(2,2, "Lifes: %i", model->getPlayer().getLifes());
 };
 
 void ConsoleView::drawPlayer(int y, int x) {
+    if(model->gameOver){
+        return;
+    }
     attron(COLOR_PAIR(3));
     mvaddch(y, x, playerTexture);
     attron(COLOR_PAIR(1));
 };
 
 void ConsoleView::drawAliens(std::vector<Alien>& aliens){
+    if(model->gameOver){
+        return;
+    }
     attron(COLOR_PAIR(2));
     for (Alien& alien : aliens)
     {
@@ -91,6 +103,9 @@ void ConsoleView::drawAliens(std::vector<Alien>& aliens){
 };
 
 void ConsoleView::drawShots(std::vector<Shot>& shots){
+    if(model->gameOver){
+        return;
+    }
     attron(COLOR_PAIR(4));
     for (Shot& shot : shots)
     {
@@ -100,6 +115,9 @@ void ConsoleView::drawShots(std::vector<Shot>& shots){
 };
 
 void ConsoleView::drawOneUps(std::vector<OneUp>& oneUps){
+    if(model->gameOver){
+        return;
+    }
     attron(COLOR_PAIR(4));
     for (OneUp& oneUp : oneUps)
     {

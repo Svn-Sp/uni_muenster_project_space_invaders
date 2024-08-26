@@ -70,6 +70,7 @@ public:
 
 
     // Game Logic
+    bool gameOver= false;
     void simulate_game_step(); // simulates one step of the game
     void movePlayerLeft(); // moves player left
     void movePlayerRight(); // moves player right
@@ -88,6 +89,7 @@ public:
     bool doesHitAlien(int x, int y);
     bool doesHitPlayer(int x, int y);
     void moveAliens();
+    void exitGame();
 
     // Shot
     std::vector<Shot>& getShots();

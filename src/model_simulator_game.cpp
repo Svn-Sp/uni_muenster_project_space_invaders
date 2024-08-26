@@ -180,8 +180,11 @@ bool GameModel::isRunning(){
 };
 
 void GameModel::stopGame(){
-    running = false;
+    gameOver = true;
 };
+void GameModel::exitGame(){
+    running = false;
+}
 
 
 // Frame
